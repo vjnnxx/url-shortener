@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const path = require('path');
+const UrlService = require('./services/urlService');
+require('./db/db');
 
 
 const port = 3000;
@@ -23,6 +25,16 @@ app.get('/redirect', (req,res)=>{
 });
 
 app.post('/shorten', (req, res)=>{
-    console.log(req.body)
-    res.send('Encurtando link...')
+    const newUrl = {
+        id : 'hashRandom2',
+        originalUrl: 'example02.com/',
+        shortUrl: 'baseurl/hashRandom2',
+        access: 0,
+        date: '08-09-2024',
+    };
+
+    const result = UrlService.createUrl(newUrl);
+    UrlService.getAllUrls()
+    .then(data => res.send(data))
+    .catch(error => console.log(error)); 
 });
