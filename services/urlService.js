@@ -1,4 +1,4 @@
-const Url = require('../models/url');
+import Url from '../models/url.js';
 
 class UrlService {
     static async createUrl(data){
@@ -21,12 +21,21 @@ class UrlService {
     static async getAllUrls(){
         try{
             const allUrls = await Url.find({});
-            console.log(allUrls)
+
             return allUrls;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    static async getOriginalUrl(url){
+        try{
+            const originalUrl = await Url.findOne({originalUrl: url});
+            return originalUrl;
         } catch (error) {
             console.log(error);
         }
     }
 }
 
-module.exports = UrlService;
+export default UrlService;

@@ -1,4 +1,4 @@
-const mongoose = require('mongoose');
+import mongoose from 'mongoose';
 
 const UrlSchema = new mongoose.Schema({
     id : {
@@ -29,4 +29,4 @@ const UrlSchema = new mongoose.Schema({
 });
 
 const Url = mongoose.model('url', UrlSchema);
-module.exports = Url;
+export default Url;
