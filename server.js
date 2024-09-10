@@ -30,27 +30,26 @@ app.get('/', (req, res)=>{
 });
 
 app.get('/redirect', (req,res)=>{
-    console.log(req.query)
+    const shortUrl = req.body.url;
+
+    if (!validateUrl(shortUrl) || shortUrl == ''){
+        return res.status(400).json({"error_code": 'INVALID_DATA', 'error_description': 'Url inválida'})
+    }
     res.send('Redirecionando...')
     
 });
 
-app.post('/shorten', (req, res)=>{
+app.post('/shorten', async (req, res)=>{
     const originalUrl = req.body.url;
     if (!validateUrl(originalUrl) || originalUrl == ''){
         return res.status(400).json({"error_code": 'INVALID_DATA', 'error_description': 'Url inválida'})
     }
 
-    //Verifica se já há um link cadastrado
+    const result = await UrlService.getOriginalUrl(originalUrl);
 
-    let check = false
-
-    // const result = UrlService.getOriginalUrl(originalUrl)
-    // .then(data => {
-    //     if (data != '') {
-    //         return res.status(200).json({"original_url": `${data.originalUrl}`, "short_url": `${data.shortUrl}`});
-    //     };
-    // });
+    if (result != null){
+        return res.status(200).json({"original_url": result.originalUrl, "short_url": result.shortUrl});
+    }
 
     const uuid = nanoid();
     
@@ -63,8 +62,9 @@ app.post('/shorten', (req, res)=>{
         date: date,
     };
 
-    //const result = UrlService.createUrl(newUrl).then(data => console.log(data))
-    //UrlService.getAllUrls()
-    // .then(data => res.send(data))
-    // .catch(error => console.log(error)); 
+    const register = UrlService.createUrl(newUrl)
+    .then(data => {
+        res.status(201).json({"short_url": data.shortUrl});
+    })
+    .catch(error => res.status(500).json({"error_code": 'SERVER ERROR'}));
 });
