@@ -1,18 +1,12 @@
 import express from 'express';
 import bodyParser from 'body-parser';
-import path, {dirname} from 'path';
 import UrlService from './services/urlService.js';
 import validateUrl from './utils/validateUrl.js';
 import formatDate from './utils/formatDate.js';
 import { nanoid } from 'nanoid';
 import connect from './db/db.js';
 
-
 connect();
-
-function extractData(data, target){
-    target.push(data);
-}
 
 const port = 3000;
 
@@ -25,18 +19,18 @@ app.listen(port, (req, res)=>{
     console.log('server on');
 });
 
-app.get('/', (req, res)=>{
-    res.sendFile(path.join(__dirname, './index.html'))
-});
+app.get('/:urlID', async (req,res, next)=>{
+    const urlId = req.params.urlID;
 
-app.get('/redirect', (req,res)=>{
-    const shortUrl = req.body.url;
+    const result = await UrlService.getUrlById(urlId);
 
-    if (!validateUrl(shortUrl) || shortUrl == ''){
-        return res.status(400).json({"error_code": 'INVALID_DATA', 'error_description': 'Url inválida'})
-    }
-    res.send('Redirecionando...')
-    
+    if (result == null){
+        return res.status(404).json({"error": "NOT_FOUND"});
+    } 
+
+    UrlService.incrementAccess(urlId);
+    res.writeHead(301, { Location: result.originalUrl});
+    res.end();
 });
 
 app.post('/shorten', async (req, res)=>{

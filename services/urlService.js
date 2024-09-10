@@ -36,6 +36,26 @@ class UrlService {
             console.log(error);
         }
     }
+
+    static async getUrlById(id){
+        try{
+            const shortUrl = await Url.findOne({id: id});
+            return shortUrl;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    static async incrementAccess(id){
+        try{
+            const url = await Url.findOne({id: id});
+            let access = url.access;
+            const response = await Url.updateOne({id: id}, {access: access + 1});
+            return response
+        } catch (error){
+            console.log(error);
+        }
+    }
 }
 
 export default UrlService;
