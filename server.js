@@ -10,7 +10,7 @@ connect();
 
 const port = 3000;
 
-const baseAdress = 'shortener.com'
+const baseAdress = process.env.BASE;
 
 const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
