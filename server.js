@@ -15,9 +15,11 @@ const baseAdress = process.env.BASE;
 const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.listen(port, (req, res)=>{
-    console.log('server on');
+app.use((req, res, next)=>{
+    res.header('Access-Control-Allow-Origin', '*');
+    next();
 });
+
 
 app.get('/:urlID', async (req,res, next)=>{
     const urlId = req.params.urlID;
@@ -61,4 +63,8 @@ app.post('/shorten', async (req, res)=>{
         res.status(201).json({"short_url": data.shortUrl});
     })
     .catch(error => res.status(500).json({"error_code": 'SERVER ERROR'}));
+});
+
+app.listen(port, (req, res)=>{
+    console.log('server on');
 });
