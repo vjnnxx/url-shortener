@@ -3,6 +3,7 @@ import bodyParser from 'body-parser';
 import UrlService from './services/urlService.js';
 import validateUrl from './utils/validateUrl.js';
 import formatDate from './utils/formatDate.js';
+import cors from 'cors';
 import { nanoid } from 'nanoid';
 import connect from './db/db.js';
 
@@ -15,10 +16,12 @@ const baseAdress = process.env.BASE;
 const app = express();
 app.use(bodyParser.urlencoded({extended: true}));
 
-app.use((req, res, next)=>{
-    res.header('Access-Control-Allow-Origin', '*');
-    next();
-});
+// app.use((req, res, next)=>{
+//     res.header('Access-Control-Allow-Origin', '*');
+//     next();
+// });
+
+app.use(cors());
 
 
 app.get('/:urlID', async (req,res, next)=>{
