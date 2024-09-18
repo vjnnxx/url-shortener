@@ -52,7 +52,7 @@ app.post('/shorten', async (req, res)=>{
     const newUrl = {
         id: uuid,
         originalUrl: originalUrl,
-        shortUrl: `${baseAdress}/${uuid}`,
+        shortUrl: `${baseAdress}${uuid}`,
         date: date,
     };
 
